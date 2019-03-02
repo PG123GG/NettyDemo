@@ -1,5 +1,8 @@
 package com.protocol.io;
 
+/**
+ * 抽象的序列化接口
+ */
 public interface Serializer {
 
     /**

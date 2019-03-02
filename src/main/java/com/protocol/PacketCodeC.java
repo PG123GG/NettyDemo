@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * 转换对象和ByteBuf工具类
  */
 public class PacketCodeC {
 
@@ -18,13 +18,15 @@ public class PacketCodeC {
     private static final Map<Byte, Class<? extends Packet>> packetTypeMap;
     private static final Map<Byte, Serializer> serializerMap;
 
+
+
     static {
         packetTypeMap = new HashMap<>();
-//        packetTypeMap.put(LOGIN_REQUEST, LoginRequestPacket.class);
+        packetTypeMap.put(Commamd.LOGIN_REQUEST, LoginRequestPacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();
-//        serializerMap.put(serializer.getSerializerAlogrithm(), serializer);
+        serializerMap.put(Commamd.LOGIN_REQUEST, serializer);
     }
 
     //封装成二进制
@@ -36,7 +38,7 @@ public class PacketCodeC {
      * @param packet
      * @return
      */
-    public ByteBuf encode(Packet packet){
+    public static ByteBuf encode(Packet packet){
         // 1. 创建 ByteBuf 对象
         ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
         // 2. 序列化 Java 对象
@@ -62,7 +64,7 @@ public class PacketCodeC {
      * @param byteBuf
      * @return
      */
-    public Packet decode(ByteBuf byteBuf) {
+    public static Packet decode(ByteBuf byteBuf) {
         // 跳过 magic number
         byteBuf.skipBytes(4);
 
@@ -85,19 +87,20 @@ public class PacketCodeC {
         Serializer serializer = getSerializer(serializeAlgorithm);
 
         if (requestType != null && serializer != null) {
-            return serializer.deserialize(requestType, bytes);
+            Packet deserialize = serializer.deserialize(requestType, bytes);
+            return deserialize;
         }
 
         return null;
     }
 
 
-    private Serializer getSerializer(byte serializeAlgorithm) {
+    private static Serializer getSerializer(byte serializeAlgorithm) {
 
         return serializerMap.get(serializeAlgorithm);
     }
 
-    private Class<? extends Packet> getRequestType(byte command) {
+    private static Class<? extends Packet> getRequestType(byte command) {
 
         return packetTypeMap.get(command);
     }
