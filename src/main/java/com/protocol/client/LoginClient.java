@@ -70,5 +70,12 @@ class LoginHandle extends ChannelInboundHandlerAdapter{
         System.out.println(s);
 
         super.channelRead(ctx, msg);
+
+        //他的作用就是接收上一个 handler 的输出，这里的 msg 就是上一个 handler 的输出。
+        // 大家也可以看到，默认情况下 adapter 会通过 fireChannelRead()
+        // 方法直接把上一个 handler 的输出结果传递到下一个 handler。
+        ctx.fireChannelRead(msg);
     }
+
+
 }

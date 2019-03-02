@@ -45,7 +45,6 @@ public class NettyServer2 {
         bind(serverBootstrap,8000);
     }
 
-
     private static void bind(final ServerBootstrap serverBootstrap, final int port) {
         serverBootstrap.bind(port).addListener(future -> {
             if (future.isSuccess()) {
@@ -57,6 +56,7 @@ public class NettyServer2 {
     }
 
 }
+
 
 class FirstServerHandler extends ChannelInboundHandlerAdapter{
 
@@ -71,12 +71,11 @@ class FirstServerHandler extends ChannelInboundHandlerAdapter{
 //        byteBuf.toString();
         System.out.println(new Date() + ": 服务端读到数据 -> " + byteBuf.toString(Charset.forName("utf-8")));
 
-
         //服务端返回给客户端的数据
-
         ByteBuf serverByteBuf = getServerByteBuf(ctx);
         ctx.channel().writeAndFlush(serverByteBuf);
     }
+
 
     private ByteBuf getServerByteBuf(ChannelHandlerContext ctx){
         ByteBuf buffer = ctx.alloc().buffer();
